@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 import React, { useState, useEffect } from 'react';
 import { db, storage } from '../../services/firebaseConnection';
 import Select from '../materialComponents/Select';
@@ -7,6 +7,8 @@ import './style.css';
 import EmployeeForm from '../Employeeform/EmployeeForm';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import user from '../../assets/images/user.png'
+import PDFGenerator from '../PDFGenerator/PDFGenerator';
+import logo from '../../assets/images/marca.png';
 
 export default function EmployeeUpdate() {
     const [employees, setEmployees] = useState([]);
@@ -100,6 +102,37 @@ export default function EmployeeUpdate() {
         }
     }
 
+    const handleUpdateEmployee = async () => {
+        if (
+            formData.name === '' ||
+            formData.address === '' ||
+            formData.address === '' ||
+            formData.sex === '' ||
+            formData.phone === '' ||
+            formData.birthDayMonth === '' ||
+            formData.position === '' ||
+            formData.hireDate === '' ||
+            formData.department === '' ||
+            formData.salary === '' ||
+            imageAvatar === null
+        ) {
+            alert('Preencha todos os campos!');
+        } else {
+            if (!selectedEmployee) {
+                console.log("Nenhum funcionário selecionado.");
+                return;
+            }
+
+            try {
+                const docRef = doc(db, "funcionarios", selectedEmployee);
+                await setDoc(docRef, formData);
+                console.log("Funcionário atualizado com sucesso!");
+            } catch (error) {
+                console.error("Erro ao atualizar funcionário:", error);
+            }
+        }
+    }
+
     return (
         <div className="main-container">
             <div className="div-main-form">
@@ -122,10 +155,20 @@ export default function EmployeeUpdate() {
                         fileName={fileName}
                         defaultImage={user}
                     />
+                    <Button variant="contained" onClick={handleUpdateEmployee}>
+                        Cadastrar
+                    </Button>
                 </div>
             </div>
             <div className="div-main-pdf">
-
+                {formData.name && (
+                    <PDFGenerator
+                        employeeData={formData}
+                        fileName={`${formData.name}/${fileName}`}
+                        logo={logo}
+                        imageAvatar={imageAvatar}
+                    />
+                )}
             </div>
         </div>
     );

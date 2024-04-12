@@ -1,0 +1,24 @@
+.container-singUp {
+  max-width: 600px;
+  height: 100%;
+  margin: 8% auto;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 20px 50px 20px;
+  border-radius: 20px;
+}
+
+.container-singUp .div-image-singUp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-singUp {
+  text-align: center;
+}
+
+.form-singUp input {
+  min-width: 600px;
+}

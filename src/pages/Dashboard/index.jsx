@@ -2,6 +2,7 @@ import { useContext } from "react"; //eslint-disable-line
 import EmployeeRegistration from "../../components/EmployeeRegistration"; //eslint-disable-line
 import ResponsiveAppBar from "../../components/materialComponents/AppBar"; // eslint-disable-line
 import { RenderingContext } from "../../contexts/rendering"; // eslint-disable-line
+import EmployeeUpdate from "../../components/EmployeeUpdate/EmployeeUpdate";
 
 export default function Dashboard() {
   const { optionsDashboard } = useContext(RenderingContext);
@@ -12,7 +13,7 @@ export default function Dashboard() {
       {optionsDashboard === "Cadastrar" ? ( // eslint-disable-line
         <EmployeeRegistration />
       ) : (
-        <h1>Dashboard</h1>
+        <EmployeeUpdate/>
       )}
     </div>
   );

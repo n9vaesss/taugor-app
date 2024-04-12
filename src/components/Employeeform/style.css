@@ -1,0 +1,43 @@
+.main-container .div-main-form .div-align-form {
+    width: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 14px;
+    background-color: white;
+    padding: 30px 30px 30px 30px;
+    border-radius: 10px;
+}
+
+.main-container .div-main-form .div-align-form input {
+    padding: 10px 10px !important;
+}
+
+.main-container .div-main-form .div-align-form .align-img-inputs {
+    display: flex;
+}
+
+.main-container .div-main-form .div-align-form .align-img-inputs div {
+    display: block;
+    width: 400px;
+}
+
+.main-container .div-main-form .div-align-form .align-img-inputs label {
+    margin-left: 10px;
+}
+
+.icon-file img {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    margin-left: 5px;
+}
+
+.icons-upload {
+    z-index: 100;
+    position: absolute;
+    color: grey;
+    top: 34%;
+    left: 41%;
+    font-size: 30px;
+}

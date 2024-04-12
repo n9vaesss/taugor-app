@@ -2,13 +2,15 @@ import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 import React, { useState, useEffect } from 'react';
 import { db, storage } from '../../services/firebaseConnection';
 import Select from '../materialComponents/Select';
-import { Button } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import './style.css';
 import EmployeeForm from '../Employeeform/EmployeeForm';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import user from '../../assets/images/user.png'
 import PDFGenerator from '../PDFGenerator/PDFGenerator';
 import logo from '../../assets/images/marca.png';
+import FloatingActionButtons from '../materialComponents/FloatingActionButton';
+
 
 export default function EmployeeUpdate() {
     const [employees, setEmployees] = useState([]);
@@ -27,7 +29,8 @@ export default function EmployeeUpdate() {
     });
     const [imageAvatar, setImageAvatar] = useState(null);
     const [fileName, setFileName] = useState('');
-
+    const [changedFields, setChangedFields] = useState({});
+    const [openModal, setOpenModal] = useState(false);
 
     useEffect(() => {
         const getCollectionData = async () => {
@@ -45,6 +48,10 @@ export default function EmployeeUpdate() {
 
     const handleInputChange = (e) => {
         const { name, value, files } = e.target;
+
+        const originalEmployee = employees.find((employee) => employee.id === selectedEmployee);
+        const originalValue = originalEmployee ? originalEmployee[name] : '';
+
         if (files && files[0]) {
             const image = e.target.files[0];
             setImageAvatar(URL.createObjectURL(image))
@@ -70,6 +77,15 @@ export default function EmployeeUpdate() {
                 },
             );
         } else {
+            const updatedFields = { ...changedFields };
+            if (value !== originalValue) {
+                updatedFields[name] = { originalValue, updatedValue: value };
+            } else {
+                delete updatedFields[name];
+            }
+
+            setChangedFields(updatedFields);
+
             setFormData({
                 ...formData,
                 [name]: value,
@@ -133,6 +149,10 @@ export default function EmployeeUpdate() {
         }
     }
 
+    const handleCloseModal = () => {
+        setOpenModal(false);
+    }
+
     return (
         <div className="main-container">
             <div className="div-main-form">
@@ -161,6 +181,13 @@ export default function EmployeeUpdate() {
                 </div>
             </div>
             <div className="div-main-pdf">
+                <div>
+                    {Object.keys(changedFields).length > 0 && (
+                        <label  onClick={() => setOpenModal(!openModal)} >
+                            <FloatingActionButtons/>
+                        </label>
+                    )}
+                </div>
                 {formData.name && (
                     <PDFGenerator
                         employeeData={formData}
@@ -170,7 +197,21 @@ export default function EmployeeUpdate() {
                     />
                 )}
             </div>
+            <Dialog open={openModal} onClose={handleCloseModal}>
+                <DialogTitle>Dados Alterados</DialogTitle>
+                <DialogContent>
+                    {Object.entries(changedFields).map(([field, { originalValue, updatedValue }]) => (
+                        <div key={field}>
+                            <b><p>{`Campo: ${field}`}</p></b>
+                            <p>{`Valor Antigo: ${originalValue}`}</p>
+                            <p>{`Novo Valor: ${updatedValue}`}</p><br />
+                        </div>
+                    ))}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseModal}>Fechar</Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 }
-
